@@ -1,0 +1,307 @@
+---
+title: "转录组测序（bulk）质量控制报告"
+author: "上海交通大学医学院上海市免疫学研究所测序平台"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    number_sections: false
+    center: true
+    theme: bootstrap
+    highlight: zenburn
+vignette: >
+  %\VignetteIndexEntry{转录组测序（bulk）质量控制报告}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+editor_options: 
+  markdown: 
+    wrap: 120
+---
+
+```{=html}
+<style>
+.vscroll-plot {
+    width: 1000px;
+    height: 400px;
+    overflow-y: scroll;
+}
+.hscroll-plot {
+    width: 500px;
+    height: 400px;
+    overflow-x: scroll;
+}
+</style>
+```
+```{r setup, include = FALSE}
+# overflow-x: hidden;
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  tidy = FALSE,
+  cache = FALSE,
+  dev = "png"
+)
+
+##### packages and settings #####
+pkgs <- c("dplyr", "pander", "glue", "DiagrammeR", "ggdag", "tidyr", "vroom", "showtext", "openxlsx")
+for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
+showtext_auto(enable = TRUE)
+font_add('Songti', 'Songti.ttc')
+
+
+meta <- lapply(files_meta, function(x) {
+  vroom(x, col_types = cols(), delim = ",")
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::arrange(Sample_ID) |>
+  dplyr::select(Sample_ID, Collaborator, Lib_Type, Description1, Description2, Species)
+
+meta2 <- lapply(files_meta2, function(x) {
+  vroom(x, col_types = cols(), delim = ",")
+}) |>
+  dplyr::bind_rows() |>
+  tidyr::drop_na(Sample_ID) |>
+  dplyr::arrange(Sample_ID) |>
+  dplyr::select(
+    `Sample_ID`, `预约日期`, `送样日期`, `课题组`, `送样人`, `联系邮箱、微信、电话`, `单位`, `Protocol`, `文库类型`, `实验对象`, `样品编号`, `种属`, `样本类型`, `细胞数量/RNA浓度`, `RNA质检日期`, `样本编号`, `RNA质检日期`, `cDNA质检日期`, `RNA RIN值`, `文库质检日期`, `建库起始RNA量 (μg)`, `送测日期`, `cDNA_Cycle`, `cDNA浓度 (ng/ul)`, `Index_ID`, `Index_ID_2`, `Index_Cycle`, `文库浓度  ( ng / μL)`, `文库大小(bp)`, `文库nM`, `文库稀释成10nM需加H2O量`
+  )
+
+samples_unique <- unique(intersect(meta$Sample_ID, meta2$Sample_ID))
+meta <- meta[match(samples_unique, meta$Sample_ID), ]
+meta2 <- meta2[match(samples_unique, meta2$Sample_ID), ]
+meta_combine <- dplyr::left_join(meta2, meta, by = "Sample_ID")
+
+
+qc_library <- qc_cdna <- qc_rna <- vector("character", length(meta_combine$Sample_ID)) |>
+  setNames(meta_combine$Sample_ID)
+for (s in meta_combine$Sample_ID) {
+  tmp <- list.files(
+    dir_qc, pattern = glue(".*{s}.bmp"), full.names = T
+  )
+  if (length(tmp) == 0) {
+    qc_library[s] <- png_na 
+  } else {
+    qc_library[s] <- tmp
+  }
+  
+  tmp <- list.files(
+    dir_qc, pattern = glue(".*{s}-cDNA.bmp"), full.names = T
+  )
+  if (length(tmp) == 0) {
+    qc_cdna[s] <- png_na 
+  } else {
+    qc_cdna[s] <- tmp
+  }
+  
+  tmp <- list.files(
+    dir_qc, pattern = glue(".*{s}_RNA.bmp"), full.names = T
+  )
+  if (length(tmp) == 0) {
+    qc_rna[s] <- png_na 
+  } else {
+    qc_rna[s] <- tmp
+  }
+}
+
+if (!dir.exists(glue("{dir_out}/tables/"))) dir.create(glue("{dir_out}/tables/"), recursive = T)
+if (!dir.exists(glue("{dir_out}/qc_rna/"))) dir.create(glue("{dir_out}/qc_rna/"), recursive = T)
+if (!dir.exists(glue("{dir_out}/qc_cdna/"))) dir.create(glue("{dir_out}/qc_cdna/"), recursive = T)
+if (!dir.exists(glue("{dir_out}/qc_library/"))) dir.create(glue("{dir_out}/qc_library/"))
+if (!dir.exists(glue("{dir_out}/multiqc/"))) dir.create(glue("{dir_out}/multiqc/"))
+
+cmd <- glue("{multiqc} {dir_qc_fastq}/*.zip --outdir {dir_out}/multiqc/ -p")
+if (!file.exists(glue("{dir_out}/multiqc/multiqc_report.html"))) system(cmd)
+fig_adapter <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_adapter_content_plot_1.png")
+fig_quality <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")
+fig_gc <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_gc_content_plot_Percentages.png")
+fig_duplication <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_sequence_duplication_levels_plot_1.png")
+fig_seqqual <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_quality_scores_plot_1.png")
+fig_length <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_sequence_length_distribution_plot_1.png")
+
+for (f in qc_cdna) {
+  if (grepl("NA\\.png", f)) next
+  
+  cmd <- glue("cp '{f}' {dir_out}/qc_cdna/")
+  system(cmd)
+}
+
+for (f in qc_rna) {
+  if (grepl("NA\\.png", f)) next
+  
+  cmd <- glue("cp '{f}' {dir_out}/qc_rna/")
+  system(cmd)
+}
+
+for (f in qc_library) {
+  if (grepl("NA\\.png", f)) next
+  
+  cmd <- glue("cp '{f}' {dir_out}/qc_library/")
+  system(cmd)
+}
+
+write.xlsx(meta_combine, glue("{dir_out}/tables/meta.xlsx"), overwrite = T)
+```
+
+## 1. 样本信息 {#样本信息}
+
+详细信息详见[表格](tables/meta.xlsx)
+
+```{r , echo = FALSE, results = 'asis'}
+cat(glue("* 本项目完成{nrow(meta_combine)}个样本的转录组测序分析。\n"))
+```
+
+::: vscroll-plot
+```{r, results = 'asis', echo = F}
+pander::pandoc.table(meta_combine, missing = "-", style = "multiline", justify = "centre", split.table = Inf, split.cell = Inf)
+```
+:::
+
+------------------------------------------------------------------------------------------------------------------------
+
+## 2. 背景介绍
+
+-   mRNA-seq是目前高通量测序技术中应用最广的一种技术。
+    -   Total RNA中95%以上都是rRNA，均十分保守，且在各组织器官中极度稳定，所以无法提供有价值的信息。
+    -   只占Total RNA总量2%-3%的mRNA是信息含量最丰富的部分，是科学研究中主要关注点。这也是mRNA-seq被广泛应用的原因。
+-   mRNA-seq可以帮助我们了解：各种比较条件下，所有基因的表达情况的差异，
+    比如：对照组和处理组之间的基因表达差异；处理不同时间点之间的基因表达差异；正常组织和肿瘤组织之间的转录组表达差异等。
+-   mRNA-seq的测序方法有很多，其中Illumina的TruseqRNA应用最为广泛。
+
+------------------------------------------------------------------------------------------------------------------------
+
+## 3. 项目流程
+
+```{r, echo = FALSE}
+DiagrammeR::grViz(
+  "digraph {
+  graph [layout = dot, rankdir = LR]
+  
+  node [shape = rectangle, style = filled, fillcolor = '#E64B35B2']        
+  rec1 [label = 'Total RNA抽提']
+  node [shape = rectangle, fillcolor = '#4DBBD5B2']
+  rec2 [label = 'RNA质检']
+  node [shape = rectangle, fillcolor = '#00A087B2']
+  rec3 [label =  '文库构建']
+  node [shape = rectangle, fillcolor = '#3C5488B2']
+  rec4 [label = '文库质检']
+  node [shape = rectangle, fillcolor = '#7E6148B2']
+  rec5 [label = '上机测序']
+  
+  # edge definitions with the node IDs
+  rec1 -> rec2 -> rec3 -> rec4 -> rec5
+  }",
+  height = 200
+)
+```
+
+### 3.1. Total RNA抽提
+
+-   由送样人抽提样本Total RNA后送至平台质检。
+
+### 3.2. RNA质检
+
+-   采用安捷伦生物分析仪（Agilent
+    2100）进行质检。降解的RNA在电泳时会在低分子量条带位置上呈现弥散状。完整的RNA则具有明显的理想条带，并可分为28S，18S以及5S。其中，28S和18S峰较为锋利；28S条带亮度一般为为18S的1-2倍；5S一般很微弱甚至没有。
+-   Agilent 2100会根据28S和18S峰的高度和尖度进行打分，称为RIN值。Illumina公司推荐用RIN值在8.0以上的RNA进行建库和测序。
+
+### 3.3. 文库构建
+
+1.  **首先，钓取mRNA。**TruSeq
+    RNA利用高等生物的mRNA都有Poly(A)尾巴这个特点，用带有Poly(T)探针的磁珠与总RNA进行杂交。Poly(T)探针就和带Poly(A)尾巴的mRNA结合在一起。
+2.  接着回收磁珠，再把这些带Poly(A)的mRNA从磁珠上洗脱下来。
+3.  洗脱下来的mRNA用镁离子溶液进行处理，镁离子会把**mRNA打断**成180-200 bp的小片段。
+4.  被打断的这些mRNA片段，用随机引物进行**逆转录**。先逆转录出第一链，再合成第二链。
+5.  逆转录出双链的cDNA后，在cDNA两端**接上"Y"型的接头**（接头上有index序列；多个样品可通过加不同的index的接头，在后续测序中被区分开）。
+6.  再经过**PCR扩增**，就成了标准的测序文库。
+
+### 3.4. 文库质检
+
+-   构建好的文库在上机前需要使用安捷伦生物分析仪（Agilent 2100）进行质检。
+-   正常文库片段分布在200-400 bp，平均片段分布在300 bp左右。
+
+### 3.5. 上机测序
+
+-   在NovaSeq 6000测序仪上使用PE150的参数测序6GB的数据量。
+
+------------------------------------------------------------------------------------------------------------------------
+
+## 4. 质量控制
+
+图片顺序与[第一部分信息](#样本信息)中的Sample_ID相对应。Not available表示未进行该部分质控。\
+RIN值等具体信息详见[表格](tables/meta.xlsx)
+
+### 4.1. RNA质控
+
+各样本质控图片详见[链接](qc_rna)
+
+::: vscroll-plot
+```{r, echo = F}
+knitr::include_graphics(path = qc_rna)
+```
+:::
+
+### 4.2. cDNA质控
+
+各样本质控图片详见[链接](qc_cdna)
+
+::: vscroll-plot
+```{r, echo = F}
+knitr::include_graphics(path = qc_cdna)
+```
+:::
+
+### 4.3. 文库质控
+
+各样本质控图片详见[链接](qc_library)
+
+::: vscroll-plot
+```{r, echo = F}
+knitr::include_graphics(path = qc_library)
+```
+:::
+
+### 4.4. 测序数据质控
+
+各样本质控图片详见[链接](multiqc/multiqc_report.html)\
+*绿色：PASS*\
+*黄色：WARN*\
+*红色：FAIL*
+
+#### 4.4.1. 接头情况
+
+-   横轴表示碱基位置，纵轴表示百分比。
+-   若有接头残留，后续分析必须去接头。
+
+```{r, echo = F}
+knitr::include_graphics(path = fig_adapter)
+```
+
+#### 4.4.2. 碱基质量值分布
+
+-   横轴为read长度，纵轴为质量得分。Q-score = -10\*lg(error P)
+-   一般要求所有位置中10%的reads小于20，即最多允许该位置10%的序列低于Q20，即90%的序列的碱基质量都大于Q20，即90%的序列碱基错误率不超过99%。当任何碱基质量低于10，或者任何中位数低于25时报WARN。需注意；当任何碱基质量低于5或者任何中位数低于20则报FAIL。
+
+```{r, echo = F}
+knitr::include_graphics(path = fig_quality)
+```
+
+#### 4.4.3. 序列长度分布
+
+-   理论上每次测序仪测出的read长度时一致的，但是由于建库等因素通常会导致一些小片段，reads长度不一致时报WARN，当有长度为0的read时报FAIL。
+
+```{r, echo = F}
+knitr::include_graphics(path = fig_length)
+```
+
+#### 4.4.4. 序列质量值分布
+
+-   每条reads的quality的均值的分布。
+-   横轴表示Q值，纵轴表示每个值对应的read数目，当测序结果主要集中在高分中，证明测序质量良好。
+-   当峰值小于27（错误率0.2%）时报WARN，当峰值小于20（错误率1%）时报FAIL。
+
+```{r, echo = F}
+knitr::include_graphics(path = fig_seqqual)
+```
+
+------------------------------------------------------------------------------------------------------------------------

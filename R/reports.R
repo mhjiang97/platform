@@ -1,0 +1,93 @@
+#' Render Single-Cell RNA-seq Report
+#' @description This function is to generate scReport.
+#' @name report_sc
+#' @aliases report_sc
+#' @param dir_out directory of the report.
+#' @param name_out name of the report, default: QC_sc.html.
+#' @param dir_html directory of cell ranger outputs.
+#' @param dir_qc directory of QC figures.
+#' @param zip if use tar to zip the out directory, default: FALSE.
+#' @param ... out name of the zipped file, default: report.
+#' @importFrom rmarkdown render
+#' @importFrom glue glue
+#' @export
+#' @return NULL
+#' @examples
+#' \dontrun{
+#' report_sc(dir_out = "./", dir_html = "/my/html/", dir_qc = "/my/qc/")
+#' }
+report_sc <- function(
+  dir_out, name_out = "QC_sc.html", dir_html, dir_qc, zip = F, ...
+) {
+  if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
+  png_na <- system.file("extdata", "NA.png", package = "platform")
+  rmd <- system.file("rmd", "QC_sc.Rmd", package = "platform")
+  rmarkdown::render(
+    rmd,
+    output_format = "html_document",
+    output_file = glue::glue("{dir_out}/{name_out}"),
+    output_options = list(
+      toc = T,
+      toc_float = T,
+      number_sections = T,
+      center = T,
+      theme = "bootstrap",
+      highlight = "zenburn"
+    )
+  )
+
+  if (zip) myzip(dir = dir_out, ...)
+}
+
+
+#' Render Bulk RNA-seq Report
+#' @description This function is to generate bulk Report.
+#' @name report_bulk
+#' @aliases report_bulk
+#' @param dir_out directory of the report.
+#' @param name_out name of the report, default: QC_bulk.html.
+#' @param files_meta a list, first meta file.
+#' @param files_meta2 a list, second meta file.
+#' @param dir_qc directory of QC figures.
+#' @param dir_qc_fastq directory of FastQC results.
+#' @param multiqc executable multiqc, default: multiqc.
+#' @param zip if use tar to zip the out directory, default: FALSE.
+#' @param ... out name of the zipped file, default: report.
+#' @importFrom rmarkdown render
+#' @importFrom glue glue
+#' @export
+#' @return NULL
+#' @examples
+#' \dontrun{
+#' report_bulk(
+#'   dir_out = "./", files_meta = "/my/meta/", files_meta2 = "/my/meta2/",
+#'   dir_qc = "/my/qc/", dir_qc_fastq = "/my/fastqc/"
+#' )
+#' }
+report_bulk <- function(
+  dir_out, name_out = "QC_bulk.html", files_meta, files_meta2, dir_qc,
+  dir_qc_fastq, multiqc = "multiqc", zip = F, ...
+) {
+  if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
+  png_na <- system.file("extdata", "NA.png", package = "platform")
+  rmd <- system.file("rmd", "QC.Rmd", package = "platform")
+  rmarkdown::render(
+    rmd,
+    output_format = "html_document",
+    output_file = glue::glue("{dir_out}/{name_out}"),
+    output_options = list(
+      toc = T,
+      toc_float = T,
+      number_sections = F,
+      center = T,
+      theme = "bootstrap",
+      highlight = "zenburn"
+    )
+  )
+
+  if (zip) myzip(dir = dir_out, ...)
+}
+
+
+
+

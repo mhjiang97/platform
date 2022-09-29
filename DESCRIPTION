@@ -1,0 +1,16 @@
+Type: Package
+Package: platform
+Title: Render Sequencing QC Reports
+Version: 0.0.0.9000
+Authors@R: 
+    person("Minghao", "Jiang", , "jiangminghao1001@163.com", role = c("aut", "cre"))
+Author: Minghao Jiang [aut, cre, cph]
+Maintainer: Minghao Jiang <jiangminghao1001@163.com>
+Description: Simple Functions for Generation of HTML Reports
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    glue,
+    rmarkdown
+RoxygenNote: 7.2.0
