@@ -15,9 +15,9 @@ Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
 
 ------------------------------------------------------------------------
 
-## Dependencies {#dependencies}
+## Dependencies
 
-1.  [x] Several R packages are required.
+1.  [x] Several R packages are required: rmarkdown, glue
 
 ------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ devtools::install_github("mhjiang97/platform")
 
 ## Usage
 
-Too simple, so I didn't write a vignette for it.
+Too simple, so I didn't write a vignette for it.  
 Library `platform` and then check `report_bulk` and `report_sc` functions.
 
 ------------------------------------------------------------------------
