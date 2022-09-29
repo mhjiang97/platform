@@ -38,4 +38,4 @@ Library `platform` and then check `report_bulk` and `report_sc` functions.
 
 ## License
 
-**This package** is licensed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.html)
+**platform** is licensed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.html)
