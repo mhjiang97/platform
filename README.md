@@ -1,4 +1,4 @@
-# Basic Platform Reports <img src="https://github.com/mhjiang97/platform/blob/master/data-raw/platform.png" align="right" height="150" width="140/"/>
+# Basic Platform Reports <img src="https://github.com/mhjiang97/platform/blob/master/data-raw/platform.png" align="right" height="150" width="130/"/>
 
 <font size="2"> we use Rmarkdown to render reports for research groups at SII </font>
 
