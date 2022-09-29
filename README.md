@@ -8,9 +8,9 @@ Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
 
 ## Table of Contents
 
-> -   [Dependencies](#Dependencies)\
-> -   [Installation](#Installation)\
-> -   [Usage](#Usage)\
+> -   [Dependencies](#Dependencies)
+> -   [Installation](#Installation)
+> -   [Usage](#Usage)
 > -   [License](#License)
 
 ------------------------------------------------------------------------
@@ -21,7 +21,7 @@ Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
 
 ------------------------------------------------------------------------
 
-## Installation {#installation}
+## Installation
 
 ``` r
 devtools::install_github("mhjiang97/platform")
@@ -29,13 +29,13 @@ devtools::install_github("mhjiang97/platform")
 
 ------------------------------------------------------------------------
 
-## Usage {#usage}
+## Usage
 
-Too simple, so I didn't write a vignette for it.\
+Too simple, so I didn't write a vignette for it.
 Library `platform` and then check `report_bulk` and `report_sc` functions.
 
 ------------------------------------------------------------------------
 
-## License {#license}
+## License
 
 **This package** is licensed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.html)
