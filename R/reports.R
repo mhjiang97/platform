@@ -2,10 +2,10 @@
 #' @description This function is to generate scReport.
 #' @name report_sc
 #' @aliases report_sc
-#' @param dir_out directory of the report.
-#' @param name_out name of the report, default: QC_sc.html.
-#' @param dir_html directory of cell ranger outputs.
-#' @param dir_qc directory of QC figures.
+#' @param dir_out the directory of the report.
+#' @param name_out the name of the report, default: QC_sc.html.
+#' @param dir_html the top/father directory of cell ranger outputs.
+#' @param dir_qc the top/father directory of QC figures.
 #' @param zip if use tar to zip the out directory, default: FALSE.
 #' @param ... out name of the zipped file, default: report.
 #' @importFrom rmarkdown render
@@ -44,13 +44,13 @@ report_sc <- function(
 #' @description This function is to generate bulk Report.
 #' @name report_bulk
 #' @aliases report_bulk
-#' @param dir_out directory of the report.
-#' @param name_out name of the report, default: QC_bulk.html.
+#' @param dir_out the directory of the report.
+#' @param name_out the name of the report, default: QC_bulk.html.
 #' @param files_meta a list, first meta file.
 #' @param files_meta2 a list, second meta file.
-#' @param dir_qc directory of QC figures.
-#' @param dir_qc_fastq directory of FastQC results.
-#' @param multiqc executable multiqc, default: multiqc.
+#' @param dir_qc the top/father directory of QC figures.
+#' @param dir_qc_fastq the top/father directory of FastQC results.
+#' @param multiqc to specify a executable multiqc, default: multiqc.
 #' @param zip if use tar to zip the out directory, default: FALSE.
 #' @param ... out name of the zipped file, default: report.
 #' @importFrom rmarkdown render

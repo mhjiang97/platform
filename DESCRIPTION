@@ -9,18 +9,23 @@ Maintainer: Minghao Jiang <jiangminghao1001@163.com>
 Description: Simple Functions for Generation of HTML Reports
 License: GPL (>= 3)
 Imports: 
+    cli,
     DiagrammeR,
     dplyr,
     glue,
     knitr,
+    lifecycle,
     openxlsx,
     pander,
+    rlang,
     rmarkdown,
     showtext,
+    stats,
     stringr,
     sysfonts,
     tidyr,
-    vroom
+    vroom,
+    withr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.0

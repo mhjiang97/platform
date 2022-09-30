@@ -2,5 +2,7 @@
 
 export(report_bulk)
 export(report_sc)
+import(rlang)
 importFrom(glue,glue)
+importFrom(lifecycle,deprecated)
 importFrom(rmarkdown,render)

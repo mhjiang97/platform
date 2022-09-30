@@ -44,8 +44,8 @@ knitr::opts_chunk$set(
 )
 
 ##### packages and settings #####
-pkgs <- c("dplyr", "pander", "glue", "DiagrammeR", "tidyr", "vroom", "showtext", "openxlsx", "knitr")
-for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
+# pkgs <- c("dplyr", "pander", "glue", "DiagrammeR", "tidyr", "vroom", "showtext", "openxlsx", "knitr")
+# for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
 showtext::showtext_auto(enable = T)
 sysfonts::font_add('Songti', 'Songti.ttc')
 
@@ -112,6 +112,7 @@ if (!dir.exists(glue::glue("{dir_out}/multiqc/"))) dir.create(glue::glue("{dir_o
 
 cmd <- glue::glue("{multiqc} {dir_qc_fastq}/*.zip --outdir {dir_out}/multiqc/ -p")
 if (!file.exists(glue::glue("{dir_out}/multiqc/multiqc_report.html"))) system(cmd)
+Sys.sleep(5)
 fig_adapter <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_adapter_content_plot_1.png")
 fig_quality <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")
 fig_gc <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_gc_content_plot_Percentages.png")

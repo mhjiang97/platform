@@ -43,8 +43,8 @@ knitr::opts_chunk$set(
 )
 
 ##### packages and settings #####
-pkgs <- c("glue", "stringr", "dplyr", "vroom", "DiagrammeR", "openxlsx", "tidyr", "pander", "knitr")
-for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
+# pkgs <- c("glue", "stringr", "dplyr", "vroom", "DiagrammeR", "openxlsx", "tidyr", "pander", "knitr")
+# for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
 showtext::showtext_auto(enable = T)
 sysfonts::font_add('Songti', 'Songti.ttc')
 
