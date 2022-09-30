@@ -17,7 +17,7 @@ Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
 
 ## Dependencies
 
-1.  [x] Several R packages are required: rmarkdown, glue
+1.  [x] Several R packages are required: rmarkdown, glue, stringr, dplyr, vroom, DiagrammeR, openxlsx, tidyr, pander, showtext, sysfonts, knitr
 
 ------------------------------------------------------------------------
 

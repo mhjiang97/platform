@@ -43,15 +43,17 @@ knitr::opts_chunk$set(
 )
 
 ##### packages and settings #####
-pkgs <- c("glue", "stringr", "dplyr", "vroom", "DiagrammeR", "openxlsx", "tidyr", "pander")
+pkgs <- c("glue", "stringr", "dplyr", "vroom", "DiagrammeR", "openxlsx", "tidyr", "pander", "knitr")
 for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
+showtext::showtext_auto(enable = T)
+sysfonts::font_add('Songti', 'Songti.ttc')
 
 
-if (!dir.exists(glue("{dir_out}/"))) dir.create(glue("{dir_out}/"), recursive = T)
-if (!dir.exists(glue("{dir_out}/summaries/"))) dir.create(glue("{dir_out}/summaries/"), recursive = T)
-if (!dir.exists(glue("{dir_out}/tables/"))) dir.create(glue("{dir_out}/tables/"))
-if (!dir.exists(glue("{dir_out}/qc_cdna/"))) dir.create(glue("{dir_out}/qc_cdna/"), recursive = T)
-if (!dir.exists(glue("{dir_out}/qc_library/"))) dir.create(glue("{dir_out}/qc_library/"))
+if (!dir.exists(glue::glue("{dir_out}/"))) dir.create(glue::glue("{dir_out}/"), recursive = T)
+if (!dir.exists(glue::glue("{dir_out}/summaries/"))) dir.create(glue::glue("{dir_out}/summaries/"), recursive = T)
+if (!dir.exists(glue::glue("{dir_out}/tables/"))) dir.create(glue::glue("{dir_out}/tables/"))
+if (!dir.exists(glue::glue("{dir_out}/qc_cdna/"))) dir.create(glue::glue("{dir_out}/qc_cdna/"), recursive = T)
+if (!dir.exists(glue::glue("{dir_out}/qc_library/"))) dir.create(glue::glue("{dir_out}/qc_library/"))
 
 hs <- list.files(dir_html, recursive = T, pattern = "web_summary.html", full.names = T)
 ts <- list.files(dir_html, recursive = T, pattern = "metrics_summary.csv", full.names = T)
@@ -62,14 +64,14 @@ nms <- sapply(hs, function(x) {
 })
 
 t_c <- lapply(as.list(1:length(ts)), function(x) {
-  vroom(ts[x], delim = ",", col_types = cols()) |>
-    mutate(Sample_ID = nms[x]) |>
-    dplyr::select(Sample_ID, everything())
+  vroom::vroom(ts[x], delim = ",", col_types = vroom::cols()) |>
+    dplyr::mutate(Sample_ID = nms[x]) |>
+    dplyr::select(Sample_ID, dplyr::everything())
 }) |>
-  bind_rows()
+  dplyr::bind_rows()
 
 t_l <- vector("list", length = ncol(t_c)) |>
-  setNames(colnames(t_c))
+  stats::setNames(colnames(t_c))
 for (n in names(t_l)) {
   t_l[[n]] <- t_c[, n]
 }
@@ -84,14 +86,14 @@ for (n in names(t_l)) {
   if (n == "Estimated Number of Cells") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 15000 ~ "Risk of Doublet",
           as.numeric(.data[[n]]) > 3000 & as.numeric(.data[[n]]) <= 15000 ~ "Pass",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -102,13 +104,13 @@ for (n in names(t_l)) {
   if (n == "Mean Reads per Cell") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 20000 ~ "Pass",
           T ~ "Suggest to Increase Sequecing Depth"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -119,13 +121,13 @@ for (n in names(t_l)) {
   if (n == "Valid Barcodes") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.75 ~ "Pass",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -136,13 +138,13 @@ for (n in names(t_l)) {
   if (n == "Q30 Bases in RNA Read") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.65 ~ "Pass",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -153,13 +155,13 @@ for (n in names(t_l)) {
   if (n == "Reads Mapped Confidently to Transcriptome") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.3 ~ "Pass",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -170,13 +172,13 @@ for (n in names(t_l)) {
   if (n == "Reads Mapped Antisense to Gene") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) < 0.1 ~ "Pass",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -187,13 +189,13 @@ for (n in names(t_l)) {
   if (n == "Sequencing Saturation") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.6 ~ "Pass",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -204,14 +206,14 @@ for (n in names(t_l)) {
   if (n == "Fraction Reads in Cells") {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
-        !!varname := case_when(
+      dplyr::mutate(
+        !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) >= 0.7 ~ "Pass",
           as.numeric(.data[[n]]) > 0.6 & as.numeric(.data[[n]]) < 0.7 ~ "Acceptable",
           T ~ "Fail"
         )
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -222,10 +224,10 @@ for (n in names(t_l)) {
   if (!n %in% c("Estimated Number of Cells", "Mean Reads per Cell", "Valid Barcodes", "Q30 Bases in RNA Read", "Reads Mapped Confidently to Transcriptome", "Reads Mapped Antisense to Gene", "Sequencing Saturation", "Fraction Reads in Cells")) {
     varname <- paste0(n, " Check")
     tmp <- tmp |>
-      mutate(
+      dplyr::mutate(
         !!varname := "-"
       ) |>
-      pivot_longer(
+      tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
@@ -236,25 +238,25 @@ for (n in names(t_l)) {
   t_l[[n]] <- tmp
 }
 
-t_cf <- bind_cols(t_l)
+t_cf <- dplyr::bind_cols(t_l)
 
 for (i in seq(2, nrow(t_cf), 2)) {
   t_cf$Sample_ID[i] <- "Check"
 }
 
-write.xlsx(t_cf, glue("{dir_out}/tables/summary.xlsx"))
+openxlsx::write.xlsx(t_cf, glue::glue("{dir_out}/tables/summary.xlsx"))
 
 for (i in 1:length(hs)) {
-  cmd <- glue("cp '{hs[i]}' {dir_out}/summaries/web_summary_{nms[i]}.html")
+  cmd <- glue::glue("cp '{hs[i]}' {dir_out}/summaries/web_summary_{nms[i]}.html")
   system(cmd)
 }
-hs_f <- list.files(glue("{dir_out}/summaries/"), recursive = T, pattern = "web_summary.*\\.html", full.names = T)
+hs_f <- list.files(glue::glue("{dir_out}/summaries/"), recursive = T, pattern = "web_summary.*\\.html", full.names = T)
 
 qc_library <- qc_cdna <- vector("character", length(nms)) |>
-  setNames(nms)
+  stats::setNames(nms)
 for (n in nms) {
   tmp <- list.files(
-    dir_qc, pattern = glue(".*{n}X?\\.bmp"), full.names = T
+    dir_qc, pattern = glue::glue(".*{n}X?\\.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_library[n] <- png_na 
@@ -263,7 +265,7 @@ for (n in nms) {
   }
   
   tmp <- list.files(
-    dir_qc, pattern = glue("{n}X?-cDNA.*\\.bmp"), full.names = T
+    dir_qc, pattern = glue::glue("{n}X?-cDNA.*\\.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_cdna[n] <- png_na 
@@ -275,14 +277,14 @@ for (n in nms) {
 for (f in qc_cdna) {
   if (grepl("NA\\.png", f)) next
   
-  cmd <- glue("cp '{f}' {dir_out}/qc_cdna/")
+  cmd <- glue::glue("cp '{f}' {dir_out}/qc_cdna/")
   system(cmd)
 }
 
 for (f in qc_library) {
   if (grepl("NA\\.png", f)) next
   
-  cmd <- glue("cp '{f}' {dir_out}/qc_library/")
+  cmd <- glue::glue("cp '{f}' {dir_out}/qc_library/")
   system(cmd)
 }
 ```
@@ -389,8 +391,8 @@ DiagrammeR::grViz(
 ::: vscroll-plot
 ```{r, results = 'asis', echo = F}
 # emphasize.strong.rows(which(t_cf$Sample_ID == "Check"))
-emphasize.italics.cells(which(t_cf == c("Fail", "Risk of Doublet", "Suggest to Increase Sequecing Depth", "Acceptable"), arr.ind = T))
-emphasize.strong.cells(which(t_cf == c("Fail", "Risk of Doublet", "Suggest to Increase Sequecing Depth", "Acceptable"), arr.ind = T))
+pander::emphasize.italics.cells(which(t_cf == c("Fail", "Risk of Doublet", "Suggest to Increase Sequecing Depth", "Acceptable"), arr.ind = T))
+pander::emphasize.strong.cells(which(t_cf == c("Fail", "Risk of Doublet", "Suggest to Increase Sequecing Depth", "Acceptable"), arr.ind = T))
 pander::pandoc.table(t_cf, missing = "-", style = "multiline", justify = "centre", split.table = Inf, split.cell = Inf)
 ```
 :::
@@ -421,10 +423,10 @@ knitr::include_graphics(path = qc_library)
 
 ```{r echo = FALSE, results = 'asis'}
 for (i in 1:length(hs_f)) {
-  cat(glue("* **{nms[i]}**样本，详见[链接](summaries/{basename(hs_f[i])})"))
+  cat(glue::glue("* **{nms[i]}**样本，详见[链接](summaries/{basename(hs_f[i])})"))
   cat("\n\n\n\n")
   cat(
-    glue(
+    glue::glue(
       '<iframe height="800" width="100%" src="\
       summaries/{basename(hs_f[i])}" frameborder="0" allowfullscreen>
 </iframe>'

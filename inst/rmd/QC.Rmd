@@ -44,21 +44,21 @@ knitr::opts_chunk$set(
 )
 
 ##### packages and settings #####
-pkgs <- c("dplyr", "pander", "glue", "DiagrammeR", "ggdag", "tidyr", "vroom", "showtext", "openxlsx")
+pkgs <- c("dplyr", "pander", "glue", "DiagrammeR", "tidyr", "vroom", "showtext", "openxlsx", "knitr")
 for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
-showtext_auto(enable = TRUE)
-font_add('Songti', 'Songti.ttc')
+showtext::showtext_auto(enable = T)
+sysfonts::font_add('Songti', 'Songti.ttc')
 
 
 meta <- lapply(files_meta, function(x) {
-  vroom(x, col_types = cols(), delim = ",")
+  vroom::vroom(x, col_types = cols(), delim = ",")
 }) |>
   dplyr::bind_rows() |>
   dplyr::arrange(Sample_ID) |>
   dplyr::select(Sample_ID, Collaborator, Lib_Type, Description1, Description2, Species)
 
 meta2 <- lapply(files_meta2, function(x) {
-  vroom(x, col_types = cols(), delim = ",")
+  vroom::vroom(x, col_types = cols(), delim = ",")
 }) |>
   dplyr::bind_rows() |>
   tidyr::drop_na(Sample_ID) |>
@@ -74,10 +74,10 @@ meta_combine <- dplyr::left_join(meta2, meta, by = "Sample_ID")
 
 
 qc_library <- qc_cdna <- qc_rna <- vector("character", length(meta_combine$Sample_ID)) |>
-  setNames(meta_combine$Sample_ID)
+  stats::setNames(meta_combine$Sample_ID)
 for (s in meta_combine$Sample_ID) {
   tmp <- list.files(
-    dir_qc, pattern = glue(".*{s}.bmp"), full.names = T
+    dir_qc, pattern = glue::glue(".*{s}.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_library[s] <- png_na 
@@ -86,7 +86,7 @@ for (s in meta_combine$Sample_ID) {
   }
   
   tmp <- list.files(
-    dir_qc, pattern = glue(".*{s}-cDNA.bmp"), full.names = T
+    dir_qc, pattern = glue::glue(".*{s}-cDNA.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_cdna[s] <- png_na 
@@ -95,7 +95,7 @@ for (s in meta_combine$Sample_ID) {
   }
   
   tmp <- list.files(
-    dir_qc, pattern = glue(".*{s}_RNA.bmp"), full.names = T
+    dir_qc, pattern = glue::glue(".*{s}_RNA.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_rna[s] <- png_na 
@@ -104,43 +104,43 @@ for (s in meta_combine$Sample_ID) {
   }
 }
 
-if (!dir.exists(glue("{dir_out}/tables/"))) dir.create(glue("{dir_out}/tables/"), recursive = T)
-if (!dir.exists(glue("{dir_out}/qc_rna/"))) dir.create(glue("{dir_out}/qc_rna/"), recursive = T)
-if (!dir.exists(glue("{dir_out}/qc_cdna/"))) dir.create(glue("{dir_out}/qc_cdna/"), recursive = T)
-if (!dir.exists(glue("{dir_out}/qc_library/"))) dir.create(glue("{dir_out}/qc_library/"))
-if (!dir.exists(glue("{dir_out}/multiqc/"))) dir.create(glue("{dir_out}/multiqc/"))
+if (!dir.exists(glue::glue("{dir_out}/tables/"))) dir.create(glue("{dir_out}/tables/"), recursive = T)
+if (!dir.exists(glue::glue("{dir_out}/qc_rna/"))) dir.create(glue("{dir_out}/qc_rna/"), recursive = T)
+if (!dir.exists(glue::glue("{dir_out}/qc_cdna/"))) dir.create(glue("{dir_out}/qc_cdna/"), recursive = T)
+if (!dir.exists(glue::glue("{dir_out}/qc_library/"))) dir.create(glue("{dir_out}/qc_library/"))
+if (!dir.exists(glue::glue("{dir_out}/multiqc/"))) dir.create(glue::glue("{dir_out}/multiqc/"))
 
-cmd <- glue("{multiqc} {dir_qc_fastq}/*.zip --outdir {dir_out}/multiqc/ -p")
-if (!file.exists(glue("{dir_out}/multiqc/multiqc_report.html"))) system(cmd)
-fig_adapter <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_adapter_content_plot_1.png")
-fig_quality <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")
-fig_gc <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_gc_content_plot_Percentages.png")
-fig_duplication <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_sequence_duplication_levels_plot_1.png")
-fig_seqqual <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_quality_scores_plot_1.png")
-fig_length <- glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_sequence_length_distribution_plot_1.png")
+cmd <- glue::glue("{multiqc} {dir_qc_fastq}/*.zip --outdir {dir_out}/multiqc/ -p")
+if (!file.exists(glue::glue("{dir_out}/multiqc/multiqc_report.html"))) system(cmd)
+fig_adapter <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_adapter_content_plot_1.png")
+fig_quality <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")
+fig_gc <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_gc_content_plot_Percentages.png")
+fig_duplication <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_sequence_duplication_levels_plot_1.png")
+fig_seqqual <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_per_sequence_quality_scores_plot_1.png")
+fig_length <- glue::glue("{dir_out}/multiqc/multiqc_plots/png/mqc_fastqc_sequence_length_distribution_plot_1.png")
 
 for (f in qc_cdna) {
   if (grepl("NA\\.png", f)) next
   
-  cmd <- glue("cp '{f}' {dir_out}/qc_cdna/")
+  cmd <- glue::glue("cp '{f}' {dir_out}/qc_cdna/")
   system(cmd)
 }
 
 for (f in qc_rna) {
   if (grepl("NA\\.png", f)) next
   
-  cmd <- glue("cp '{f}' {dir_out}/qc_rna/")
+  cmd <- glue::glue("cp '{f}' {dir_out}/qc_rna/")
   system(cmd)
 }
 
 for (f in qc_library) {
   if (grepl("NA\\.png", f)) next
   
-  cmd <- glue("cp '{f}' {dir_out}/qc_library/")
+  cmd <- glue::glue("cp '{f}' {dir_out}/qc_library/")
   system(cmd)
 }
 
-write.xlsx(meta_combine, glue("{dir_out}/tables/meta.xlsx"), overwrite = T)
+openxlsx::write.xlsx(meta_combine, glue::glue("{dir_out}/tables/meta.xlsx"), overwrite = T)
 ```
 
 ## 1. 样本信息 {#样本信息}
@@ -148,7 +148,7 @@ write.xlsx(meta_combine, glue("{dir_out}/tables/meta.xlsx"), overwrite = T)
 详细信息详见[表格](tables/meta.xlsx)
 
 ```{r , echo = FALSE, results = 'asis'}
-cat(glue("* 本项目完成{nrow(meta_combine)}个样本的转录组测序分析。\n"))
+cat(glue::glue("* 本项目完成{nrow(meta_combine)}个样本的转录组测序分析。\n"))
 ```
 
 ::: vscroll-plot
