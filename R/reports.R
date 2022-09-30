@@ -50,7 +50,7 @@ report_sc <- function(
 #' @param files_meta2 a list, second meta file.
 #' @param dir_qc the top/father directory of QC figures.
 #' @param dir_qc_fastq the top/father directory of FastQC results.
-#' @param multiqc to specify a executable multiqc, default: multiqc.
+#' @param multiqc to specify an executable multiqc, default: multiqc.
 #' @param zip if use tar to zip the out directory, default: FALSE.
 #' @param ... out name of the zipped file, default: report.
 #' @importFrom rmarkdown render
