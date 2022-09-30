@@ -48,6 +48,7 @@ knitr::opts_chunk$set(
 showtext::showtext_auto(enable = T)
 sysfonts::font_add('Songti', 'Songti.ttc')
 
+`%>%` <- dplyr::`%>%`
 
 if (!dir.exists(glue::glue("{dir_out}/"))) dir.create(glue::glue("{dir_out}/"), recursive = T)
 if (!dir.exists(glue::glue("{dir_out}/summaries/"))) dir.create(glue::glue("{dir_out}/summaries/"), recursive = T)
@@ -58,19 +59,19 @@ if (!dir.exists(glue::glue("{dir_out}/qc_library/"))) dir.create(glue::glue("{di
 hs <- list.files(dir_html, recursive = T, pattern = "web_summary.html", full.names = T)
 ts <- list.files(dir_html, recursive = T, pattern = "metrics_summary.csv", full.names = T)
 nms <- sapply(hs, function(x) {
-  stringr::str_extract(x, "cellranger_out_.*") |>
-    stringr::str_replace_all("\\/.*", "") |>
+  stringr::str_extract(x, "cellranger_out_.*") %>%
+    stringr::str_replace_all("\\/.*", "") %>%
     stringr::str_replace_all("cellranger_out_", "")
 })
 
 t_c <- lapply(as.list(1:length(ts)), function(x) {
-  vroom::vroom(ts[x], delim = ",", col_types = vroom::cols()) |>
-    dplyr::mutate(Sample_ID = nms[x]) |>
+  vroom::vroom(ts[x], delim = ",", col_types = vroom::cols()) %>%
+    dplyr::mutate(Sample_ID = nms[x]) %>%
     dplyr::select(Sample_ID, dplyr::everything())
-}) |>
+}) %>%
   dplyr::bind_rows()
 
-t_l <- vector("list", length = ncol(t_c)) |>
+t_l <- vector("list", length = ncol(t_c)) %>%
   stats::setNames(colnames(t_c))
 for (n in names(t_l)) {
   t_l[[n]] <- t_c[, n]
@@ -85,153 +86,153 @@ for (n in names(t_l)) {
   
   if (n == "Estimated Number of Cells") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 15000 ~ "Risk of Doublet",
           as.numeric(.data[[n]]) > 3000 & as.numeric(.data[[n]]) <= 15000 ~ "Pass",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Mean Reads per Cell") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 20000 ~ "Pass",
           T ~ "Suggest to Increase Sequecing Depth"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Valid Barcodes") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.75 ~ "Pass",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Q30 Bases in RNA Read") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.65 ~ "Pass",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Reads Mapped Confidently to Transcriptome") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.3 ~ "Pass",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Reads Mapped Antisense to Gene") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) < 0.1 ~ "Pass",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Sequencing Saturation") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) > 0.6 ~ "Pass",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (n == "Fraction Reads in Cells") {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := dplyr::case_when(
           as.numeric(.data[[n]]) >= 0.7 ~ "Pass",
           as.numeric(.data[[n]]) > 0.6 & as.numeric(.data[[n]]) < 0.7 ~ "Acceptable",
           T ~ "Fail"
         )
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
   if (!n %in% c("Estimated Number of Cells", "Mean Reads per Cell", "Valid Barcodes", "Q30 Bases in RNA Read", "Reads Mapped Confidently to Transcriptome", "Reads Mapped Antisense to Gene", "Sequencing Saturation", "Fraction Reads in Cells")) {
     varname <- paste0(n, " Check")
-    tmp <- tmp |>
+    tmp <- tmp %>%
       dplyr::mutate(
         !!varname := "-"
-      ) |>
+      ) %>%
       tidyr::pivot_longer(
         cols = 1:2,
         names_to = "tmp",
         values_to = n
-      ) |>
+      ) %>%
       dplyr::select(!tmp)
   }
   
@@ -252,7 +253,7 @@ for (i in 1:length(hs)) {
 }
 hs_f <- list.files(glue::glue("{dir_out}/summaries/"), recursive = T, pattern = "web_summary.*\\.html", full.names = T)
 
-qc_library <- qc_cdna <- vector("character", length(nms)) |>
+qc_library <- qc_cdna <- vector("character", length(nms)) %>%
   stats::setNames(nms)
 for (n in nms) {
   tmp <- list.files(

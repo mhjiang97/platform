@@ -49,20 +49,21 @@ knitr::opts_chunk$set(
 showtext::showtext_auto(enable = T)
 sysfonts::font_add('Songti', 'Songti.ttc')
 
+`%>%` <- dplyr::`%>%`
 
 meta <- lapply(files_meta, function(x) {
   vroom::vroom(x, col_types = cols(), delim = ",")
-}) |>
-  dplyr::bind_rows() |>
-  dplyr::arrange(Sample_ID) |>
+}) %>%
+  dplyr::bind_rows() %>%
+  dplyr::arrange(Sample_ID) %>%
   dplyr::select(Sample_ID, Collaborator, Lib_Type, Description1, Description2, Species)
 
 meta2 <- lapply(files_meta2, function(x) {
   vroom::vroom(x, col_types = cols(), delim = ",")
-}) |>
-  dplyr::bind_rows() |>
-  tidyr::drop_na(Sample_ID) |>
-  dplyr::arrange(Sample_ID) |>
+}) %>%
+  dplyr::bind_rows() %>%
+  tidyr::drop_na(Sample_ID) %>%
+  dplyr::arrange(Sample_ID) %>%
   dplyr::select(
     `Sample_ID`, `预约日期`, `送样日期`, `课题组`, `送样人`, `联系邮箱、微信、电话`, `单位`, `Protocol`, `文库类型`, `实验对象`, `样品编号`, `种属`, `样本类型`, `细胞数量/RNA浓度`, `RNA质检日期`, `样本编号`, `RNA质检日期`, `cDNA质检日期`, `RNA RIN值`, `文库质检日期`, `建库起始RNA量 (μg)`, `送测日期`, `cDNA_Cycle`, `cDNA浓度 (ng/ul)`, `Index_ID`, `Index_ID_2`, `Index_Cycle`, `文库浓度  ( ng / μL)`, `文库大小(bp)`, `文库nM`, `文库稀释成10nM需加H2O量`
   )
@@ -73,7 +74,7 @@ meta2 <- meta2[match(samples_unique, meta2$Sample_ID), ]
 meta_combine <- dplyr::left_join(meta2, meta, by = "Sample_ID")
 
 
-qc_library <- qc_cdna <- qc_rna <- vector("character", length(meta_combine$Sample_ID)) |>
+qc_library <- qc_cdna <- qc_rna <- vector("character", length(meta_combine$Sample_ID)) %>%
   stats::setNames(meta_combine$Sample_ID)
 for (s in meta_combine$Sample_ID) {
   tmp <- list.files(
