@@ -57,14 +57,14 @@ tryCatch(
 `%>%` <- dplyr::`%>%`
 
 meta <- lapply(files_meta, function(x) {
-  vroom::vroom(x, col_types = cols(), delim = ",")
+  vroom::vroom(x, col_types = vroom::cols(), delim = ",")
 }) %>%
   dplyr::bind_rows() %>%
   dplyr::arrange(Sample_ID) %>%
   dplyr::select(Sample_ID, Collaborator, Lib_Type, Description1, Description2, Species)
 
 meta2 <- lapply(files_meta2, function(x) {
-  vroom::vroom(x, col_types = cols(), delim = ",")
+  vroom::vroom(x, col_types = vroom::cols(), delim = ",")
 }) %>%
   dplyr::bind_rows() %>%
   tidyr::drop_na(Sample_ID) %>%
