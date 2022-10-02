@@ -47,7 +47,12 @@ knitr::opts_chunk$set(
 # pkgs <- c("dplyr", "pander", "glue", "DiagrammeR", "tidyr", "vroom", "showtext", "openxlsx", "knitr")
 # for (pkg in pkgs) suppressPackageStartupMessages(library(pkg, character.only = T))
 showtext::showtext_auto(enable = T)
-sysfonts::font_add('Songti', 'Songti.ttc')
+tryCatch(
+  sysfonts::font_add('Songti', 'Songti.ttc'),
+  error = function(e) {
+    stop("Please install 'Songti.ttc' into path ~/.fonts/ and then run the command 'fc-cache -vf'!\nPlatform exits")
+  }
+)
 
 `%>%` <- dplyr::`%>%`
 
