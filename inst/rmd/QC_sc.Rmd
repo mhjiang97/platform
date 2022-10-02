@@ -62,6 +62,7 @@ if (!dir.exists(glue::glue("{dir_out}/qc_cdna/"))) dir.create(glue::glue("{dir_o
 if (!dir.exists(glue::glue("{dir_out}/qc_library/"))) dir.create(glue::glue("{dir_out}/qc_library/"))
 
 hs <- list.files(dir_html, recursive = T, pattern = "web_summary.html", full.names = T)
+hs <- hs[grepl("outs\\/web_summary.html", hs)]
 ts <- list.files(dir_html, recursive = T, pattern = "metrics_summary.csv", full.names = T)
 nms <- sapply(hs, function(x) {
   stringr::str_extract(x, "cellranger_out_.*") %>%
