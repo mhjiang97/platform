@@ -434,8 +434,7 @@ for (i in 1:length(hs_f)) {
   cat("\n\n\n\n")
   cat(
     glue::glue(
-      '<iframe height="800" width="100%" src="\
-      summaries/{basename(hs_f[i])}" frameborder="0" allowfullscreen>
+      '<iframe height="800" width="100%" src="summaries/{basename(hs_f[i])}" frameborder="0" allowfullscreen>
 </iframe>'
     )
   )
