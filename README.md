@@ -4,14 +4,14 @@
 
 ## Author
 
-Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
+Minghao Jiang, [jiangminghao1001@163.com](mailto:jiangminghao1001@163.com)
 
 ## Table of Contents
 
-> -   [Dependencies](#Dependencies)
-> -   [Installation](#Installation)
-> -   [Usage](#Usage)
-> -   [License](#License)
+> -   [Dependencies](#dependencies)
+> -   [Installation](#installation)
+> -   [Usage](#usage)
+> -   [License](#license)
 
 ------------------------------------------------------------------------
 
@@ -20,7 +20,6 @@ Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
 1.  [x] Several R packages are required: `rmarkdown`, `glue`, `stringr`, `dplyr`, `vroom`, `DiagrammeR`, `openxlsx`, `tidyr`, `pander`, `showtext`, `sysfonts`, `knitr`  
 2.  [x] You must install the font `Songti` into your system  
 3.  [x] Version of `pandoc` >= **2.19.2**
-
 
 ## Installation
 

@@ -7,7 +7,7 @@
 #' @param dir_html the top/father directory of cell ranger outputs.
 #' @param dir_qc the top/father directory of QC figures.
 #' @param zip if use tar to zip the out directory, default: FALSE.
-#' @param ... out name of the zipped file, default: report.
+#' @param ... out name of the zipped file, default: name = "report".
 #' @importFrom rmarkdown render
 #' @importFrom glue glue
 #' @export
@@ -52,7 +52,7 @@ report_sc <- function(
 #' @param dir_qc_fastq the top/father directory of FastQC results.
 #' @param multiqc to specify an executable multiqc, default: multiqc.
 #' @param zip if use tar to zip the out directory, default: FALSE.
-#' @param ... out name of the zipped file, default: report.
+#' @param ... out name of the zipped file, default: name = "report".
 #' @importFrom rmarkdown render
 #' @importFrom glue glue
 #' @export
