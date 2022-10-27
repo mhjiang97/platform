@@ -19,6 +19,7 @@
 report_sc <- function(
   dir_out, name_out = "QC_sc.html", dir_html, dir_qc, zip = F, ...
 ) {
+  checkVersion()
   if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
   png_na <- system.file("extdata", "NA.png", package = "platform")
   rmd <- system.file("rmd", "QC_sc.Rmd", package = "platform")
@@ -68,6 +69,7 @@ report_bulk <- function(
   dir_out, name_out = "QC_bulk.html", files_meta, files_meta2, dir_qc,
   dir_qc_fastq, multiqc = "multiqc", zip = F, ...
 ) {
+  checkVersion()
   if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
   png_na <- system.file("extdata", "NA.png", package = "platform")
   rmd <- system.file("rmd", "QC.Rmd", package = "platform")
