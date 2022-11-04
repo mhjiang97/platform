@@ -68,10 +68,10 @@ meta2 <- lapply(files_meta2, function(x) {
 }) %>%
   dplyr::bind_rows() %>%
   tidyr::drop_na(Sample_ID) %>%
-  dplyr::arrange(Sample_ID) %>%
-  dplyr::select(
-    `Sample_ID`, `预约日期`, `送样日期`, `课题组`, `送样人`, `联系邮箱、微信、电话`, `单位`, `文库类型`, `实验对象`, `样品编号`, `种属`, `样本类型`, `细胞数量/RNA浓度`, `RNA质检日期`, `样本编号`, `RNA质检日期`, `cDNA质检日期`, `RNA RIN值`, `文库质检日期`, `建库起始RNA量 (μg)`, `送测日期`, `cDNA_Cycle`, `cDNA浓度 (ng/ul)`, `Index_ID`, `Index_ID_2`, `Index_Cycle`, `文库浓度  ( ng / μL)`, `文库大小(bp)`, `文库nM`, `文库稀释成10nM需加H2O量`
-  ) # Protocol
+  dplyr::arrange(Sample_ID) # %>%
+  # dplyr::select(
+  #   `Sample_ID`, `预约日期`, `送样日期`, `课题组`, `送样人`, `联系邮箱、微信、电话`, `单位`, `文库类型`, `实验对象`, `样品编号`, `种属`, `样本类型`, `细胞数量/RNA浓度`, `RNA质检日期`, `样本编号`, `RNA质检日期`, `cDNA质检日期`, `RNA RIN值`, `文库质检日期`, `建库起始RNA量 (μg)`, `送测日期`, `cDNA_Cycle`, `cDNA浓度 (ng/ul)`, `Index_ID`, `Index_ID_2`, `Index_Cycle`, `文库浓度  ( ng / μL)`, `文库大小(bp)`, `文库nM`, `文库稀释成10nM需加H2O量`
+  # ) # Protocol
 
 samples_unique <- unique(intersect(meta$Sample_ID, meta2$Sample_ID))
 meta <- meta[match(samples_unique, meta$Sample_ID), ]
