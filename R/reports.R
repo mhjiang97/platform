@@ -91,5 +91,52 @@ report_bulk <- function(
 }
 
 
+#' Render Single-Cell RNA-seq Report (Total-seq)
+#' @description This function is to generate scReport (Total-seq).
+#' @name report_tt
+#' @aliases report_tt
+#' @param dir_out the directory of the report.
+#' @param name_out the name of the report, default: QC_tt.html.
+#' @param dir_html the top/father directory of cell ranger outputs.
+#' @param ref_csv the path to the feature_ref file.
+#' @param dir_qc the top/father directory of QC figures.
+#' @param zip if use tar to zip the out directory, default: FALSE.
+#' @param ... out name of the zipped file, default: name = "report".
+#' @importFrom rmarkdown render
+#' @importFrom glue glue
+#' @export
+#' @return NULL
+#' @examples
+#' \dontrun{
+#' report_tt(
+#'   dir_out = "./", dir_html = "/my/html/", ref_csv = "/my/ref_feature.csv",
+#'   dir_qc = "/my/qc/"
+#' )
+#' }
+report_tt <- function(
+    dir_out, name_out = "QC_tt.html", dir_html, ref_csv, dir_qc, zip = F, ...
+) {
+  checkVersion()
+  if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
+  png_na <- system.file("extdata", "NA.png", package = "platform")
+  rmd <- system.file("rmd", "QC_tt.Rmd", package = "platform")
+  rmarkdown::render(
+    rmd,
+    output_format = "html_document",
+    output_file = glue::glue("{dir_out}/{name_out}"),
+    output_options = list(
+      toc = T,
+      toc_float = T,
+      number_sections = T,
+      center = T,
+      theme = "bootstrap",
+      highlight = "zenburn"
+    )
+  )
+
+  if (zip) myzip(dir = dir_out, ...)
+}
+
+
 
 
