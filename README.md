@@ -30,7 +30,7 @@ devtools::install_github("mhjiang97/platform")
 ## Usage
 
 Too simple, so I didn't write a vignette for it.  
-Run `library(platform)` and then check `report_bulk` and `report_sc` functions.
+`library(platform)`, then check `report_bulk`, `report_sc`, and `report_tt` functions.
 
 ## License
 
