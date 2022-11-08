@@ -64,6 +64,7 @@ if (!dir.exists(glue::glue("{dir_out}/qc_library/"))) dir.create(glue::glue("{di
 hs <- list.files(dir_html, recursive = T, pattern = "web_summary.html", full.names = T)
 hs <- hs[grepl("outs\\/web_summary.html", hs)]
 ts <- list.files(dir_html, recursive = T, pattern = "metrics_summary.csv", full.names = T)
+ts <- ts[grepl("outs\\/metrics_summary.csv", ts)]
 nms <- sapply(hs, function(x) {
   stringr::str_extract(x, "cellranger_out_.*") %>%
     stringr::str_replace_all("\\/.*", "") %>%
