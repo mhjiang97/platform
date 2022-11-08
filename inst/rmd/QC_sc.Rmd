@@ -71,18 +71,12 @@ nms <- sapply(hs, function(x) {
     stringr::str_replace_all("cellranger_out_", "")
 })
 
-if (length(ts) > 1) {
-  t_c <- lapply(as.list(1:length(ts)), function(x) {
+t_c <- lapply(as.list(1:length(ts)), function(x) {
   vroom::vroom(ts[x], delim = ",", col_types = vroom::cols()) %>%
     dplyr::mutate(Sample_ID = nms[x]) %>%
     dplyr::select(Sample_ID, dplyr::everything())
 }) %>%
   dplyr::bind_rows()
-} else {
-  t_c <- vroom::vroom(ts, delim = ",", col_types = vroom::cols()) %>%
-    dplyr::mutate(Sample_ID = nms[x]) %>%
-    dplyr::select(Sample_ID, dplyr::everything())
-}
 
 t_l <- vector("list", length = ncol(t_c)) %>%
   stats::setNames(colnames(t_c))
