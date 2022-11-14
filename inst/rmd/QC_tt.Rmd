@@ -270,7 +270,7 @@ for (n in nms) {
   }
   
   tmp <- list.files(
-    dir_qc, pattern = glue::glue("{n}X?-cDNA.*\\.bmp"), full.names = T
+    dir_qc, pattern = glue::glue("{n}X?-[cC]DNA.*\\.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_cdna[n] <- png_na 

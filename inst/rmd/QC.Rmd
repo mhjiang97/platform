@@ -92,7 +92,7 @@ for (s in meta_combine$Sample_ID) {
   }
   
   tmp <- list.files(
-    dir_qc, pattern = glue::glue(".*{s}-cDNA.bmp"), full.names = T
+    dir_qc, pattern = glue::glue(".*{s}-[cC]DNA.bmp"), full.names = T
   )
   if (length(tmp) == 0) {
     qc_cdna[s] <- png_na 
