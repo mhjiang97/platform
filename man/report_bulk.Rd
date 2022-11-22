@@ -17,23 +17,23 @@ report_bulk(
 )
 }
 \arguments{
-\item{dir_out}{directory of the report.}
+\item{dir_out}{the directory of the report.}
 
-\item{name_out}{name of the report, default: QC_bulk.html.}
+\item{name_out}{the name of the report, default: QC_bulk.html.}
 
 \item{files_meta}{a list, first meta file.}
 
 \item{files_meta2}{a list, second meta file.}
 
-\item{dir_qc}{directory of QC figures.}
+\item{dir_qc}{the top/father directory of QC figures.}
 
-\item{dir_qc_fastq}{directory of FastQC results.}
+\item{dir_qc_fastq}{the top/father directory of FastQC results.}
 
-\item{multiqc}{executable multiqc, default: multiqc.}
+\item{multiqc}{to specify an executable multiqc, default: multiqc.}
 
 \item{zip}{if use tar to zip the out directory, default: FALSE.}
 
-\item{...}{out name of the zipped file, default: report.}
+\item{...}{out name of the zipped file, default: name = "report".}
 }
 \description{
 This function is to generate bulk Report.

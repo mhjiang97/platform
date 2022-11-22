@@ -7,17 +7,17 @@
 report_sc(dir_out, name_out = "QC_sc.html", dir_html, dir_qc, zip = F, ...)
 }
 \arguments{
-\item{dir_out}{directory of the report.}
+\item{dir_out}{the directory of the report.}
 
-\item{name_out}{name of the report, default: QC_sc.html.}
+\item{name_out}{the name of the report, default: QC_sc.html.}
 
-\item{dir_html}{directory of cell ranger outputs.}
+\item{dir_html}{the top/father directory of cell ranger outputs.}
 
-\item{dir_qc}{directory of QC figures.}
+\item{dir_qc}{the top/father directory of QC figures.}
 
 \item{zip}{if use tar to zip the out directory, default: FALSE.}
 
-\item{...}{out name of the zipped file, default: report.}
+\item{...}{out name of the zipped file, default: name = "report".}
 }
 \description{
 This function is to generate scReport.
