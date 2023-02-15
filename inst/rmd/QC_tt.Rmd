@@ -65,7 +65,7 @@ ts <- list.files(dir_html, recursive = T, pattern = "metrics_summary.csv", full.
 nms <- sapply(hs, function(x) {
   stringr::str_extract(x, "cellranger_out_.*") %>%
     stringr::str_replace_all("\\/.*", "") %>%
-    stringr::str_replace_all("cellranger_out_", "")
+    stringr::str_replace_all("cellranger_out_(TT_)?", "")
 })
 
 t_c <- lapply(as.list(1:length(ts)), function(x) {
@@ -265,8 +265,12 @@ for (n in nms) {
   )
   if (length(tmp) == 0) {
     qc_library[n] <- png_na 
-  } else {
+  }
+  if (length(tmp) == 1) {
     qc_library[n] <- tmp
+  }
+  if (length(tmp) > 1) {
+    qc_library[n] <- tmp[which.max(file.info(tmp)$mtime)]
   }
   
   tmp <- list.files(
@@ -274,8 +278,12 @@ for (n in nms) {
   )
   if (length(tmp) == 0) {
     qc_cdna[n] <- png_na 
-  } else {
+  }
+  if (length(tmp) == 1) {
     qc_cdna[n] <- tmp
+  }
+  if (length(tmp) > 1) {
+    qc_cdna[n] <- tmp[which.max(file.info(tmp)$mtime)]
   }
 }
 
