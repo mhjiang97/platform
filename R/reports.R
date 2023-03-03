@@ -98,7 +98,7 @@ report_bulk <- function(
 #' @param dir_out the directory of the report.
 #' @param name_out the name of the report, default: QC_tt.html.
 #' @param dir_html the top/father directory of cell ranger outputs.
-#' @param ref_csv the path to the feature_ref file.
+#' @param dir_ref the top/father directory of feature_ref files.
 #' @param dir_qc the top/father directory of QC figures.
 #' @param zip if use tar to zip the out directory, default: FALSE.
 #' @param ... out name of the zipped file, default: name = "report".
@@ -109,12 +109,12 @@ report_bulk <- function(
 #' @examples
 #' \dontrun{
 #' report_tt(
-#'   dir_out = "./", dir_html = "/my/html/", ref_csv = "/my/ref_feature.csv",
+#'   dir_out = "./", dir_html = "/my/html/", dir_ref = "/my/ref/",
 #'   dir_qc = "/my/qc/"
 #' )
 #' }
 report_tt <- function(
-    dir_out, name_out = "QC_tt.html", dir_html, ref_csv, dir_qc, zip = F, ...
+    dir_out, name_out = "QC_tt.html", dir_html, dir_ref, dir_qc, zip = F, ...
 ) {
   checkVersion()
   if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
