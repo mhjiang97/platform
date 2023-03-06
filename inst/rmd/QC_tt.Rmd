@@ -304,7 +304,7 @@ for (f in qc_library) {
 
 files_ref <- list.files(glue::glue("{dir_ref}/"), recursive = T, pattern = ".*?\\_feature\\_ref\\.csv", full.names = T)
 list_ref <- vector("list", length(files_ref))
-for (i in 1:length(file_ref)) {
+for (i in 1:length(files_ref)) {
   list_ref[[i]] <- vroom::vroom(files_ref[i], delim = ",", col_types = vroom::cols())
 }
 ref <- dplyr::bind_rows(list_ref) %>%
