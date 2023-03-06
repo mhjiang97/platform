@@ -404,35 +404,6 @@ DiagrammeR::grViz(
 
 网页信息详见[下文](#cell-ranger-web-summary)
 
-::: vscroll-plot
-```{r, results = 'asis', echo = F}
-# emphasize.strong.rows(which(t_cf$Sample_ID == "Check"))
-pander::emphasize.italics.cells(which(t_cf == c("Fail", "Risk of Doublet", "Suggest to Increase Sequecing Depth", "Acceptable"), arr.ind = T))
-pander::emphasize.strong.cells(which(t_cf == c("Fail", "Risk of Doublet", "Suggest to Increase Sequecing Depth", "Acceptable"), arr.ind = T))
-pander::pandoc.table(t_cf, missing = "-", style = "multiline", justify = "centre", split.table = Inf, split.cell = Inf)
-```
-:::
-
-## cDNA质控
-
-[图片下载](qc_cdna)
-
-::: vscroll-plot
-```{r, echo = F}
-knitr::include_graphics(path = qc_cdna)
-```
-:::
-
-## 文库质控
-
-[图片下载](qc_library)
-
-::: vscroll-plot
-```{r, echo = F}
-knitr::include_graphics(path = qc_library)
-```
-:::
-
 ------------------------------------------------------------------------------------------------------------------------
 
 # Cell Ranger Web Summary {#cell-ranger-web-summary}
