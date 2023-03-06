@@ -18,9 +18,9 @@ Minghao Jiang, [jiangminghao1001\@163.com](mailto:jiangminghao1001@163.com)
 
 ## Dependencies
 
-1.  [x] Several R packages are required: `rmarkdown`, `glue`, `stringr`, `dplyr`, `vroom`, `DiagrammeR`, `openxlsx`, `tidyr`, `pander`, `showtext`, `sysfonts`, `knitr`\
-2.  [x] You must install the font `Songti` into your system\
-3.  [x] Version of `pandoc` \>= **2.19.2**
+1.  [x] Several R packages are required: `rmarkdown`, `glue`, `stringr`, `dplyr`, `vroom`, `DiagrammeR`, `openxlsx`, `tidyr`, `pander`, `showtext`, `sysfonts`, `knitr`
+2.  [x] You must install the font `Songti` into your system
+3.  [x] Version of `pandoc` >= **2.19.2**
 
 ## Installation
 
@@ -30,7 +30,7 @@ devtools::install_github("mhjiang97/platform")
 
 ## Usage
 
-Too simple, so I didn't write a vignette for it.\
+Too simple, so I didn't write a vignette for it.
 `library(platform)`, then check `report_bulk`, `report_sc`, and `report_tt` functions.
 
 ## Branch
