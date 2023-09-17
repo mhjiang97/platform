@@ -114,7 +114,7 @@ report_bulk <- function(
 #' )
 #' }
 report_tt <- function(
-    dir_out, name_out = "QC_tt.html", dir_html, dir_ref, dir_qc, zip = F, ...
+  dir_out, name_out = "QC_tt.html", dir_html, dir_ref, dir_qc, zip = F, ...
 ) {
   checkVersion()
   if (!dir.exists(dir_out)) dir.create(dir_out, recursive = T)
